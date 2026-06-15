@@ -256,6 +256,19 @@ export function buildSingleJobSnapshot(cwd, reference, options = {}) {
 export function resolveResultJob(cwd, reference) {
   const workspaceRoot = resolveWorkspaceRoot(cwd);
   const jobs = sortJobsNewestFirst(reference ? listJobs(workspaceRoot) : filterJobsForCurrentSession(listJobs(workspaceRoot)));
+
+  // A referenced job that is still active must be reported as such here, before
+  // the finished-only matcher below throws a misleading "No job found" for it.
+  if (reference) {
+    const referenced =
+      jobs.find((job) => job.id === reference) ??
+      jobs.find((job) => job.id.startsWith(reference)) ??
+      null;
+    if (referenced && (referenced.status === "queued" || referenced.status === "running")) {
+      throw new Error(`Job ${referenced.id} is still ${referenced.status}. Check /gemini:status and try again once it finishes.`);
+    }
+  }
+
   const selected = matchJobReference(
     jobs,
     reference,
@@ -264,15 +277,6 @@ export function resolveResultJob(cwd, reference) {
 
   if (selected) {
     return { workspaceRoot, job: selected };
-  }
-
-  const active = matchJobReference(jobs, reference, (job) => job.status === "queued" || job.status === "running");
-  if (active) {
-    throw new Error(`Job ${active.id} is still ${active.status}. Check /gemini:status and try again once it finishes.`);
-  }
-
-  if (reference) {
-    throw new Error(`No finished job found for "${reference}". Run /gemini:status to inspect active jobs.`);
   }
 
   throw new Error("No finished Gemini jobs found for this repository yet.");
