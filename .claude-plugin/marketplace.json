@@ -1,0 +1,21 @@
+{
+  "name": "google-gemini",
+  "owner": {
+    "name": "gemini-plugin-cc contributors"
+  },
+  "metadata": {
+    "description": "Gemini plugin for Claude Code: delegate background code reviews to the local Gemini CLI.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "gemini",
+      "description": "Use Google's Gemini CLI from Claude Code to review code in the background.",
+      "version": "0.1.0",
+      "author": {
+        "name": "gemini-plugin-cc contributors"
+      },
+      "source": "./plugins/gemini"
+    }
+  ]
+}

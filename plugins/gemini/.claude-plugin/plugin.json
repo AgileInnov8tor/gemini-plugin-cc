@@ -1,0 +1,8 @@
+{
+  "name": "gemini",
+  "version": "0.1.0",
+  "description": "Use Google's Gemini CLI from Claude Code to review code in the background.",
+  "author": {
+    "name": "gemini-plugin-cc contributors"
+  }
+}
